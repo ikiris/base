@@ -33,3 +33,6 @@ __debug_*
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Generated go files
+*.pb.go
