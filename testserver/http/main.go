@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"flag"
+	"log/slog"
 	"os"
 	"path/filepath"
 
 	"github.com/teraptra/base/prod/prodserver"
 	"github.com/teraptra/base/testserver/http/server"
-
-	"golang.org/x/exp/slog"
 )
 
 func main() {
