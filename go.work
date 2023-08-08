@@ -2,6 +2,8 @@ go 1.19
 
 use (
 	.
+	./prod/server
 	./prodi
 	./prodi/oidc
+	./testserver
 )
