@@ -1,6 +1,6 @@
 module github.com/teraptra/base
 
-go 1.20
+go 1.21
 
 replace github.com/teraptra/base => ./
 

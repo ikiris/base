@@ -5,11 +5,10 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
-
-	"golang.org/x/exp/slog"
 )
 
 var (
@@ -22,9 +21,9 @@ func init() {
 }
 
 type config struct {
-	port int
+	port              int
 	certFile, keyFile *string
-	clientAuthType tls.ClientAuthType
+	clientAuthType    tls.ClientAuthType
 }
 
 type sOpt func(*config)
@@ -36,24 +35,24 @@ func Port(p int) sOpt {
 }
 
 type server struct {
-	conf              *config
-	srv               *http.Server
-	ctx *context.Context
+	conf *config
+	srv  *http.Server
+	ctx  *context.Context
 }
 
 // New returns a prod server.
 func New(opts ...sOpt) (*server, error) {
 	var (
-		defaultPort = 8000
+		defaultPort       = 8000
 		defaultClientAuth = tls.VerifyClientCertIfGiven
 	)
 	if port, err := strconv.Atoi(os.Getenv("SERVER_PORT")); err == nil && port != 0 {
 		defaultPort = port
 	}
 	conf := &config{
-		port: defaultPort,
-		certFile: certFile,
-		keyFile: keyFile,
+		port:           defaultPort,
+		certFile:       certFile,
+		keyFile:        keyFile,
 		clientAuthType: defaultClientAuth,
 	}
 	for _, opt := range opts {
@@ -74,7 +73,7 @@ func buildServer(c *config) (*server, error) {
 
 	s := &server{
 		srv: &http.Server{
-			Handler:   mux,
+			Handler: mux,
 			TLSConfig: &tls.Config{
 				ClientAuth: tls.RequireAndVerifyClientCert,
 			},
@@ -88,7 +87,6 @@ func buildServer(c *config) (*server, error) {
 }
 
 func (s *server) statusZHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func (s *server) ListenAndServe(ctx context.Context) error {

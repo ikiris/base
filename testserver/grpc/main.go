@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"os"
 
 	"github.com/teraptra/base/prod/prodserver"
-	"golang.org/x/exp/slog"
 )
 
 func main() {
