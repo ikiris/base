@@ -7,11 +7,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"oidc"
 	"os"
 	"os/exec"
 
 	vault "github.com/hashicorp/vault/api"
+	"github.com/teraptra/base/prodi/oidc"
 	"golang.org/x/exp/slog"
 )
 
