@@ -13,7 +13,7 @@ func main() {
 		slog.Error("Error: %v", err)
 		os.Exit(1)
 	}
-}
+}+
 
 func run() error {
 	ctx := context.Background()

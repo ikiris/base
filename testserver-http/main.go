@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/teraptra/base/prod/prodserver"
-	"github.com/teraptra/base/testserver/http/server"
+	"github.com/teraptra/base/testserver-http/server"
 )
 
 func main() {

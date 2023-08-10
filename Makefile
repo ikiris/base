@@ -8,7 +8,7 @@ gen protoc _protoc:
 clean _clean:
 	shopt -s globstar; rm -f ./**/*.pb.go
 
-_build:
+build _build:
 	go build ./...
 
 all _all:
