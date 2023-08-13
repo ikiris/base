@@ -8,6 +8,7 @@ import (
 	v1a "k8s.io/api/apps/v1"
 	v1m "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -15,11 +16,25 @@ type kwrapper struct {
 	clientSet *kubernetes.Clientset
 }
 
-func newK8(kubeconfig string) (*kwrapper, error) {
+// use local cluster config if avaliable, otherwise load from file using flags
+func getK8Config(kubeconfig string) (*rest.Config, error) {
+	config, err := rest.InClusterConfig()
+	if err == nil {
+		return config, nil
+	}
+
 	// use the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		return nil, fmt.Errorf("error generating kubeconfig: %w", err)
+	}
+	return config, nil
+}
+
+func newK8(kubeconfig string) (*kwrapper, error) {
+	config, err := getK8Config(kubeconfig)
+	if err != nil {
+		return nil, err
 	}
 
 	// create the clientset
