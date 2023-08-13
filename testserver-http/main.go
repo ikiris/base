@@ -39,6 +39,6 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	s.prodRegister(pSrv)
+	s.ProdRegister(pSrv)
 	return pSrv.ListenAndServe(ctx)
 }

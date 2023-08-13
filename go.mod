@@ -4,7 +4,6 @@ go 1.21
 
 replace github.com/teraptra/base => ./
 
-
 require (
 	github.com/hashicorp/vault/api v1.9.2
 	golang.org/x/sync v0.3.0
@@ -12,7 +11,10 @@ require (
 	k8s.io/client-go v0.27.4
 )
 
-require google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
+require (
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0 // indirect
+)
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect

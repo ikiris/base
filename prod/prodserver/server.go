@@ -33,6 +33,10 @@ type prodServer struct {
 	cf context.CancelFunc
 }
 
+func (s *prodServer) RegisterService(sd *grpc.ServiceDesc, ss interface{}) {
+	s.gs.RegisterService(sd, ss)
+}
+
 func New() (*prodServer, error) {
 	creds, err := loadKeyPair()
 	if err != nil {
