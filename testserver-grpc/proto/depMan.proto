@@ -11,6 +11,7 @@ message Deployment {
 message ReplicaRequest {
     string name = 1;
     uint32 replicas = 2;
+    string namespace = 3;
 }
 
 message ReplicaResponse {
@@ -18,7 +19,9 @@ message ReplicaResponse {
     Deployment expected = 2;
 }
 
-message ListRequest {}
+message ListRequest {
+    string namespace = 1;
+}
 
 message ListResponse {
     repeated Deployment deployment = 1;

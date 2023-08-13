@@ -48,7 +48,7 @@ func (s *server) getDeployment(ctx context.Context, ns, dn string) (*v1a.Deploym
 }
 
 func (s *server) Get(ctx context.Context, req *pb.ReplicaRequest) (*pb.Deployment, error) {
-	d, err := s.getDeployment(ctx, "core", "server")
+	d, err := s.getDeployment(ctx, req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -65,5 +65,18 @@ func (s *server) Set(ctx context.Context, req *pb.ReplicaRequest) (*pb.ReplicaRe
 }
 
 func (s *server) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
-	return nil, errors.ErrUnsupported
+	l, err := s.clientSet.AppsV1().Deployments(req.GetNamespace()).List(ctx, v1m.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed retrieving deployments: %w", err)
+	}
+
+	ret := &pb.ListResponse{}
+	var deps []*pb.Deployment
+	for _, d := range l.Items {
+		deps = append(deps, &pb.Deployment{
+			Name: d.GetName(),
+		})
+	}
+	ret.Deployment = deps
+	return ret, nil
 }
