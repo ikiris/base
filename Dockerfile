@@ -3,9 +3,6 @@
 # Start from the latest golang base image
 FROM golang:latest as builder
 
-#Set some config defaults
-ARG PORT=8080
-
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
@@ -32,8 +29,10 @@ WORKDIR /root/
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main .
 
-# Expose port 8080 to the outside world
-EXPOSE $PORT
+#Set some config defaults
+ENV PORT=6000
 
 # Command to run the executable
-CMD ["./main"] 
+CMD ["./main"]
+
+EXPOSE 6000
