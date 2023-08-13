@@ -14,6 +14,8 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
+const defaultCheckTimeout = 30 * time.Second
+
 func main() {
 	if err := run(); err != nil {
 		slog.Error(err.Error())
@@ -21,6 +23,7 @@ func main() {
 	}
 }
 
+// run is a simple func wrapper for the basic startup seq
 func run() error {
 	ctx := context.Background()
 	homedir, err := os.UserHomeDir()
@@ -47,7 +50,7 @@ func run() error {
 
 	// health watch poller
 	updateHealthz := func(ctx context.Context) {
-		tctx, cf := context.WithTimeout(ctx, 30*time.Second)
+		tctx, cf := context.WithTimeout(ctx, defaultCheckTimeout)
 		defer cf()
 		stat := grpc_health_v1.HealthCheckResponse_SERVING
 		if err := s.Check(tctx); err != nil {
