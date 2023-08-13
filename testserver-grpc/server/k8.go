@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	v1a "k8s.io/api/apps/v1"
@@ -45,4 +46,15 @@ func (s *kwrapper) getDeployments(ctx context.Context, ns string) (*v1a.Deployme
 		return nil, fmt.Errorf("failed retrieving deployments: %w", err)
 	}
 	return l, nil
+}
+
+func (s *kwrapper) verify(ctx context.Context) error {
+	pods, err := s.clientSet.CoreV1().Pods("").List(ctx, v1m.ListOptions{})
+	if err != nil {
+		return err
+	}
+	if pods == nil {
+		return errors.New("empty pod return")
+	}
+	return nil
 }

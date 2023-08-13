@@ -57,3 +57,8 @@ func (s *server) List(ctx context.Context, req *pb.ListRequest) (*pb.ListRespons
 	ret.Deployment = deps
 	return ret, nil
 }
+
+// Check preforms a basic sanity check on the k8 connection.
+func (s *server) Check(ctx context.Context) error {
+	return s.kw.verify(ctx)
+}

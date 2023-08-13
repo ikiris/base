@@ -14,6 +14,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/peer"
 )
 
@@ -26,13 +28,10 @@ var (
 	proto    = flag.String("proto", "tcp", "listen protocol")
 )
 
-func init() {
-	flag.Parse()
-}
-
 type prodServer struct {
-	gs *grpc.Server
-	cf context.CancelFunc
+	gs      *grpc.Server
+	cf      context.CancelFunc
+	healthz *health.Server
 }
 
 func (s *prodServer) RegisterService(sd *grpc.ServiceDesc, ss interface{}) {
@@ -44,12 +43,15 @@ func New() (*prodServer, error) {
 	if err != nil {
 		return nil, err
 	}
-	gs := grpc.NewServer(
+	s := grpc.NewServer(
 		grpc.Creds(creds),
 		grpc.UnaryInterceptor(middlefunc),
 	)
+	healthz := health.NewServer()
+	healthpb.RegisterHealthServer(s, healthz)
 	return &prodServer{
-		gs: gs,
+		gs:      s,
+		healthz: healthz,
 	}, nil
 }
 
@@ -67,6 +69,7 @@ func (s *prodServer) ListenAndServe(ctx context.Context) error {
 	go func() {
 		<-sctx.Done()
 		slog.Info("prod stop requested")
+		s.healthz.Shutdown()
 		s.gs.GracefulStop()
 	}()
 
@@ -79,6 +82,11 @@ func (s *prodServer) ListenAndServe(ctx context.Context) error {
 
 func (s *prodServer) GracefulStop() {
 	s.cf()
+}
+
+func (s *prodServer) SetServingStatus(service string, status healthpb.HealthCheckResponse_ServingStatus) {
+	// This should be smarter to be safe in terms of service name to prevent overlap, but this is a single service example.
+	s.healthz.SetServingStatus(fmt.Sprintf("grpc.health.v1.%s", service), status)
 }
 
 func loadKeyPair() (credentials.TransportCredentials, error) {
