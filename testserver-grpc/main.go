@@ -25,14 +25,16 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	s, err := prodserver.New()
-	if err != nil {
-		return err
-	}
+
 	var kubeconfig string
 	flag.StringVar(&kubeconfig, "kubeconfig", filepath.Join(homedir, ".kube", "config"), "path to the kubeconfig file")
 	flag.Parse()
 	gs, err := server.New(kubeconfig)
+	if err != nil {
+		return err
+	}
+
+	s, err := prodserver.New()
 	if err != nil {
 		return err
 	}

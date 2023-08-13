@@ -17,9 +17,11 @@ import (
 	"google.golang.org/grpc/peer"
 )
 
+// I would expect this to be defaulted using opt mods on New so it can be individualized for multiple active runners, but this is the quick and dirty to save time for std defaults.
 var (
-	certFile = flag.String("certfile", "cert.pem", "certificate PEM file")
-	keyFile  = flag.String("keyfile", "key.pem", "key PEM file")
+	certFile = flag.String("certfile", "/etc/mTLS/cert.pem", "certificate PEM file")
+	keyFile  = flag.String("keyfile", "/etc/mTLS/key.pem", "key PEM file")
+	caFile   = flag.String("cafile", "/etc/mTLS/ca.crt", "key PEM file")
 	port     = flag.Int("port", 6000, "listen port")
 	proto    = flag.String("proto", "tcp", "listen protocol")
 )
@@ -80,12 +82,12 @@ func (s *prodServer) GracefulStop() {
 }
 
 func loadKeyPair() (credentials.TransportCredentials, error) {
-	certificate, err := tls.LoadX509KeyPair("certs/server.crt", "certs/server.key")
+	certificate, err := tls.LoadX509KeyPair(*certFile, *keyFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load server certification: %w", err)
 	}
 
-	data, err := os.ReadFile("certs/ca.crt")
+	data, err := os.ReadFile(*caFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load CA file: %w", err)
 	}
