@@ -48,7 +48,7 @@ func run() error {
 
 	pb.RegisterDepManServiceServer(ps, s)
 
-	// health watch poller
+	// health watch poller - i'd have rather made this event based, but it works for now.
 	updateHealthz := func(ctx context.Context) {
 		tctx, cf := context.WithTimeout(ctx, defaultCheckTimeout)
 		defer cf()
