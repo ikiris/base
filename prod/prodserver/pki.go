@@ -13,7 +13,7 @@ import (
 var (
 	certFile = flag.String("certfile", "/etc/mTLS/cert.pem", "certificate PEM file")
 	keyFile  = flag.String("keyfile", "/etc/mTLS/key.pem", "key PEM file")
-	caFile   = flag.String("cafile", "/etc/mTLS/ca.crt", "key PEM file")
+	caFile   = flag.String("cafile", "/etc/mTLS/ca.crt", "ca file")
 )
 
 // loadKeyPair does all the work for setting up the CA pool chains for mTLS verification from the given inputs.

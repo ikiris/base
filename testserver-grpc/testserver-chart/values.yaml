@@ -1,0 +1,15 @@
+replicaCount: 2
+
+image:
+  repository: ikirisfallen/testserver-grpc
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  name: testserver-service
+  type: ClusterIP
+  port: 80
+  targetPort: 6000
+
+env:
+  name: dev

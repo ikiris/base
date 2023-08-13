@@ -1,0 +1,9 @@
+apiVersion: v2
+name: testserver-chart
+description: Deployment man
+type: application
+version: 0.1.1
+appVersion: "1.0.0"
+maintainers:
+  - email: ikiris@gmail.com
+    name: Blake Dunlap

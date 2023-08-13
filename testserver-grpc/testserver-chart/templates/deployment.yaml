@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-testserver
+  labels:
+    app: testserver
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+          - name: secrets
+            mountPath: "/var/secrets/"
+            readOnly: true
+      volumes:
+      - name: secrets
+        projected:
+          sources:
+          - secret:
+              name: {{ .Release.Name }}-testserver-mTLS-key
+          - secret:
+              name: {{ .Release.Name }}-testserver-mTLS-cert
+          - secret:
+              name: {{ .Release.Name }}-testserver-mTLS-CA
